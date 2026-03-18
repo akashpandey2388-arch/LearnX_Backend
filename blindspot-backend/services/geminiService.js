@@ -1,25 +1,29 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
+// Initialize the API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const analyzeBlindspots = async (userData) => {
   try {
-    // Try using 'gemini-1.5-flash' or 'gemini-pro' 
-    // If one fails, the other usually works based on your SDK version
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // UPDATED MODEL NAME FOR 2026
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const prompt = `Review this user statement: "${userData}". 
-    Identify 2 specific professional blindspots and 1 growth tip. 
-    Keep the tone helpful and professional.`;
+    const prompt = `
+      As a 'Blindspot' Analyst, review this user insight: "${userData}".
+      Identify 2-3 psychological or professional blindspots and suggest a 
+      specific action step for each. Keep it concise and insightful.
+    `;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error("--- REAL ERROR FROM GOOGLE ---");
-    console.error(error); // This prints the full error object
-    throw new Error("AI Analysis failed");
+    // This will now show the SPECIFIC error if it fails again
+    console.error("--- Gemini API Error Details ---");
+    console.error("Status:", error.status);
+    console.error("Message:", error.message);
+    throw new Error("AI Analysis failed. Check server console for details.");
   }
 };
 
