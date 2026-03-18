@@ -3,29 +3,32 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+// 1. Import Routes & Services
+const analyzeRoutes = require('./routes/analyzeRoutes');
+const { analyzeBlindspots } = require('./services/geminiService');
+
 const app = express();
 
-// Middleware
+// 2. Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database Connection
+// 3. Database Connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
-// Test AI Route (Temporary)
-const { analyzeBlindspots } = require('./services/geminiService');
+// 4. Use Routes
+// This maps all routes in analyzeRoutes.js to start with /api
+app.use('/api', analyzeRoutes);
 
-app.post('/test-ai', async (req, res) => {
-  try {
-    const data = req.body.data;
-    const analysis = await analyzeBlindspots(data);
-    res.json({ analysis });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// 5. Temporary Health Check / Test Route
+app.get('/', (req, res) => {
+  res.send("Blindspot Analyzer API is running...");
 });
 
+// 6. Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
