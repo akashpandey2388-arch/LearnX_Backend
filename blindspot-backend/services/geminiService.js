@@ -7,7 +7,7 @@ const analyzeBlindspots = async (userData) => {
   try {
     // Try using 'gemini-1.5-flash' or 'gemini-pro' 
     // If one fails, the other usually works based on your SDK version
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `Review this user statement: "${userData}". 
     Identify 2 specific professional blindspots and 1 growth tip. 
