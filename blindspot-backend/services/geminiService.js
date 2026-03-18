@@ -1,26 +1,25 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
-// Initialize the Gemini API with your key from the .env file
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const analyzeBlindspots = async (surveyData) => {
+const analyzeBlindspots = async (userData) => {
   try {
-    // We use 'gemini-1.5-flash' for speed and cost-efficiency
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Try using 'gemini-1.5-flash' or 'gemini-pro' 
+    // If one fails, the other usually works based on your SDK version
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
 
-    const prompt = `
-      You are an expert data analyst. I am providing you with survey responses: ${JSON.stringify(surveyData)}.
-      Identify the top 3 "blindspots" (areas where the user's perception differs from reality or common patterns).
-      Return the results in a clear, bulleted format.
-    `;
+    const prompt = `Review this user statement: "${userData}". 
+    Identify 2 specific professional blindspots and 1 growth tip. 
+    Keep the tone helpful and professional.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw new Error("Failed to analyze data with AI.");
+    console.error("--- REAL ERROR FROM GOOGLE ---");
+    console.error(error); // This prints the full error object
+    throw new Error("AI Analysis failed");
   }
 };
 
