@@ -7,8 +7,11 @@ const Question = require('../models/Question'); // <--- 1. ADD THIS IMPORT
 // POST: /api/analyze
 router.post('/analyze', async (req, res) => {
     try {
-        const { userData } = req.body;
-        if (!userData) return res.status(400).json({ error: "No user data provided" });
+        const input = req.body?.userData;
+        if (typeof input !== 'string' || !input.trim()) {
+            return res.status(400).json({ error: "Enter your insight as non-empty text and try again." });
+        }
+        const userData = input.trim();
 
         const analysis = await analyzeBlindspots(userData);
 

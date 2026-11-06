@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "run": "cd blindspot-backend && PORT=3000 npm start"
+  }
+}
